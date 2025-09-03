@@ -36,8 +36,13 @@ export async function POST(request: Request) {
             await sql`INSERT INTO extracted_data (data) VALUES (${parsed}) RETURNING id, created_at;`;
 
         return NextResponse.json({ id: inserted[0].id, data: parsed });
-    } catch (err: any) {
+     } catch (err: unknown) {
         console.error("upload error:", err);
-        return NextResponse.json({ error: err.message }, { status: 500 });
+
+        if (err instanceof Error) {
+            return NextResponse.json({ error: err.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ error: "Unknown error" }, { status: 500 });
     }
 }

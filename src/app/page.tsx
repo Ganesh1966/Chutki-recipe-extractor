@@ -1,9 +1,15 @@
 "use client";
 import { useState } from "react";
 
+interface RecipeData {
+  name?: string;
+  ingredients?: string[];
+  steps?: string[];
+}
+
 export default function HomePage() {
   const [file, setFile] = useState<File | null>(null);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<RecipeData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,8 +35,9 @@ export default function HomePage() {
       // Parse the stringified JSON returned from backend
       const parsedData = typeof result.data === "string" ? JSON.parse(result.data) : result.data;
       setData(parsedData);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      const error = err as Error;
+      setError(error.message);
     } finally {
       setLoading(false);
     }

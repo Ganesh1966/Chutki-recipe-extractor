@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import openai from "@/lib/openai";
 import { sql } from "@/lib/db";
-import { buildRecipePrompt } from "@/lib/prompt";
+import { buildProductCatalogPrompt } from "@/lib/prompt";
 
 export async function POST(request: Request) {
     try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         }
 
         const text = await maybeFile.text();
-        const prompt = buildRecipePrompt(text);
+        const prompt = buildProductCatalogPrompt(text);
 
         const completion = await openai.chat.completions.create({
             model: process.env.OPEN_AI_COMPLETION_MODEL || "gpt-4o-mini",
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
             await sql`INSERT INTO extracted_data (data) VALUES (${parsed}) RETURNING id, created_at;`;
 
         return NextResponse.json({ id: inserted[0].id, data: parsed });
-     } catch (err: unknown) {
+    } catch (err: unknown) {
         console.error("upload error:", err);
 
         if (err instanceof Error) {

@@ -15,12 +15,14 @@ export async function POST(request: Request) {
         const text = await maybeFile.text();
         const prompt = buildProductCatalogPrompt(text);
 
-        const completion = await openai.chat.completions.create({
-            model: process.env.OPEN_AI_COMPLETION_MODEL || "gpt-4o-mini",
-            response_format: prompt.response_format,
-            messages: prompt.messages,
-            temperature: 0
-        });
+        const completion = []
+
+        // const completion = await openai.chat.completions.create({
+        //     model: process.env.OPEN_AI_COMPLETION_MODEL || "gpt-4o-mini",
+        //     response_format: prompt.response_format,
+        //     messages: prompt.messages,
+        //     temperature: 0
+        // });
 
         console.log(completion)
         const parsed = completion.choices[0].message?.content;
